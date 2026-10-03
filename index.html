@@ -1,31 +1,900 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#f6f1fa" id="themeColor"><title>Баланс — план зарплаты</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<style>
-:root{color-scheme:light;--bg:#f6f1fa;--card:#fff;--ink:#241c2d;--muted:#817889;--line:#e9e1ed;--green:#7650a8;--mint:#f0e7f8;--amber:#f3b8d4;--red:#e77995;--shadow:0 12px 36px #3c20520e;--field:#fdfbfe;--soft:#faf7fc;--accent:#7546a4;--focus:#eeddf6;--upload-line:#d8c6e2}body[data-theme="dark"]{color-scheme:dark;--bg:#17121d;--card:#211a29;--ink:#f4edf8;--muted:#b2a5bb;--line:#382d42;--green:#bd83e5;--mint:#392646;--red:#ff91aa;--shadow:0 12px 36px #0005;--field:#19141f;--soft:#1d1724;--accent:#e59bc8;--focus:#4b315c;--upload-line:#61436f}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 9% 0%,#edddf780 0,transparent 34%),radial-gradient(ellipse at 94% 12%,#f6d9e880 0,transparent 30%),var(--bg);color:var(--ink);font:15px/1.5 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}button,input{font:inherit}button{cursor:pointer}.shell{max-width:1120px;margin:auto;padding:38px 28px 64px}.top{display:flex;align-items:center;justify-content:space-between;margin-bottom:34px}.brand{display:flex;gap:12px;align-items:center;font-weight:700;font-size:16px;letter-spacing:-.3px}.logo{width:38px;height:38px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,#8050c1,#e179ae);color:white;font-size:18px}.period{color:var(--muted);font-size:13px}.top-actions{display:flex;align-items:center;gap:16px}.theme-toggle{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:8px 11px;font-size:13px;font-weight:650;box-shadow:var(--shadow)}.theme-toggle:hover{border-color:#be8cce}.intro{margin-bottom:26px}.eyebrow{text-transform:uppercase;letter-spacing:1.4px;color:var(--green);font-size:11px;font-weight:750}.intro h1{font-size:clamp(30px,5vw,44px);letter-spacing:-1.8px;line-height:1.1;margin:9px 0}.intro p{color:var(--muted);margin:0}.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow)}.card h2{font-size:17px;margin:0;letter-spacing:-.35px}.sub{color:var(--muted);font-size:13px;margin:5px 0 20px}.upload{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:17px;border:1px dashed var(--upload-line);border-radius:14px;background:var(--soft)}.upload-title{font-weight:650}.upload small{display:block;color:var(--muted);font-size:12px;margin-top:3px}.button{background:linear-gradient(120deg,#7648b1,#cc66aa);color:#fff;border:0;border-radius:11px;padding:10px 15px;font-weight:650;white-space:nowrap}.button:hover{filter:brightness(1.08)}.file-name{font-size:12px;color:var(--green);margin-top:10px;min-height:18px}.income{margin-top:20px}.field-label{font-size:13px;color:var(--muted);display:block;margin-bottom:7px}.money{position:relative}.money input,.expense-input,.pct input{width:100%;border:1px solid var(--line);background:var(--field);border-radius:11px;padding:13px 42px 13px 13px;color:var(--ink);outline:none}.money input{font-size:22px;font-weight:700;letter-spacing:-.5px}.money input:focus,.expense-input:focus,.pct input:focus{border-color:#bd7bcc;box-shadow:0 0 0 3px var(--focus)}.suffix{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--muted)}.hint{color:var(--muted);font-size:12px;margin-top:8px}.expense-head{display:flex;justify-content:space-between;align-items:start}.expense-list{display:grid;gap:9px}.expense-row{display:grid;grid-template-columns:1fr 150px 34px;gap:8px;align-items:center}.expense-row input{min-width:0}.expense-input{padding:10px 11px}.remove{width:34px;height:36px;border:0;border-radius:9px;background:transparent;color:#9b9f99;font-size:18px}.remove:hover{background:var(--mint);color:var(--red)}.add{margin-top:12px;background:transparent;border:0;color:var(--green);font-weight:650;padding:8px 0}.total-row{border-top:1px solid var(--line);margin-top:18px;padding-top:15px;display:flex;justify-content:space-between;font-size:13px;color:var(--muted)}.total-row strong{color:var(--ink);font-size:15px}.summary{grid-column:1/-1;background:linear-gradient(120deg,#6841a1 0%,#a34fa4 54%,#d75f9d 100%);color:white;border:0;overflow:hidden;position:relative}.summary:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;border:1px solid #ffffff17;right:-95px;top:-150px;box-shadow:0 0 0 32px #ffffff08,0 0 0 64px #ffffff06}.summary .eyebrow{color:#f4d9fa}.summary h2{font-size:16px;color:#fff0fa}.summary-top{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:20px}.remaining{font-size:clamp(34px,6vw,53px);letter-spacing:-2px;font-weight:750;line-height:1.1;margin-top:5px}.remaining-label{color:#f3d9ed;font-size:13px}.chips{display:flex;gap:8px;margin-top:19px;flex-wrap:wrap}.chip{background:#ffffff16;border:1px solid #ffffff1c;color:#edf5ef;padding:6px 10px;border-radius:20px;font-size:12px}.breakdown{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:25px}.category{background:#ffffff12;border:1px solid #ffffff1b;border-radius:14px;padding:14px}.cat-top{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#d2e4d8}.dot{height:8px;width:8px;border-radius:50%;background:#efb3d2;display:inline-block;margin-right:6px}.category:nth-child(2) .dot{background:#d79be1}.category:nth-child(3) .dot{background:#f3a9c6}.category:nth-child(4) .dot{background:#bd9cf0}.cat-amount{font-size:20px;font-weight:700;margin:5px 0 1px;letter-spacing:-.5px}.cat-pct{font-size:11px;color:#f3d9ed}.allocation{margin-top:18px}.allocation h3{font-size:14px;margin:0 0 3px}.allocation .sub{color:#f3d9ed;margin:0 0 12px}.pct-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.pct label{font-size:11px;color:#f3d9ed;display:block;margin-bottom:5px}.pct input{padding:8px;color:white;background:#ffffff12;border-color:#ffffff25}.allocation-note{font-size:11px;color:#f3d9ed;margin-top:9px}.bar{height:7px;background:#ffffff24;border-radius:10px;overflow:hidden;margin-top:17px;display:flex}.bar span{height:100%}.bar span:nth-child(1){background:#efb3d2}.bar span:nth-child(2){background:#d79be1}.bar span:nth-child(3){background:#f3a9c6}.bar span:nth-child(4){background:#bd9cf0}.negative{color:#ffd5cd}.status{font-size:12px;color:#f3d9ed;margin-top:12px;min-height:18px}.footer{font-size:12px;color:var(--muted);text-align:center;margin-top:22px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#202923;color:white;padding:11px 17px;border-radius:12px;box-shadow:var(--shadow);font-size:13px;display:none;z-index:5}
-.summary .chip{background:#ffffff18;border-color:#ffffff30}.category{background:#ffffff14}.pct input{color:#fff;background:#ffffff17;border-color:#ffffff38}.pct input:focus{border-color:#f4c0e2;box-shadow:0 0 0 3px #ffffff20}.bar{background:#ffffff30}.dot{background:#efb3d2}.category:nth-child(2) .dot{background:#d79be1}.category:nth-child(3) .dot{background:#f3a9c6}.category:nth-child(4) .dot{background:#bd9cf0}.footer{color:var(--muted)}.toast{background:linear-gradient(120deg,#6841a1,#bd559d)}body[data-theme="dark"] .summary{background:linear-gradient(120deg,#503275 0%,#773d79 54%,#9c3f70 100%)}body[data-theme="dark"]{background:radial-gradient(ellipse at 8% 0%,#482b5c7a 0,transparent 36%),radial-gradient(ellipse at 96% 10%,#5a294d65 0,transparent 32%),var(--bg)}body[data-theme="dark"] .upload{background:#1d1724}body[data-theme="dark"] .theme-toggle:hover{border-color:#bd83e5}@media(max-width:760px){.shell{padding:22px 15px 40px}.grid{grid-template-columns:1fr}.summary{grid-column:auto}.breakdown,.pct-grid{grid-template-columns:repeat(2,1fr)}.expense-row{grid-template-columns:1fr 120px 34px}.card{padding:19px}.top{margin-bottom:25px}}
-</style></head>
-<body><main class="shell"><header class="top"><div class="brand"><span class="logo">₽</span><span>Баланс</span></div><div class="top-actions"><div class="period" id="today"></div><button class="theme-toggle" id="themeToggle" type="button" aria-label="Включить тёмную тему">🌙 Тёмная тема</button></div></header><section class="intro"><div class="eyebrow">План на месяц</div><h1>Деньги под контролем</h1><p>Загрузи зарплату, добавь обязательные траты — остальное распределим.</p></section>
-<div class="grid"><section class="card"><h2>Доход</h2><p class="sub">Загрузи Excel или введи сумму вручную</p><label class="upload" for="file"><span><span class="upload-title">Файл с зарплатой</span><small>.xlsx или .xls · обработка происходит в браузере</small></span><span class="button">Выбрать файл</span></label><input id="file" type="file" accept=".xlsx,.xls,.csv" hidden><div class="file-name" id="fileName"></div><div class="income"><label class="field-label" for="income">Доход после налогов</label><div class="money"><input id="income" type="number" min="0" step="0.01" value="51199.5" inputmode="decimal"><span class="suffix">₽</span></div><div class="hint" id="incomeHint">Сумма после налога из строки итога вашего файла. Проверь перед планированием.</div></div></section>
-<section class="card"><div class="expense-head"><div><h2>Обязательные траты</h2><p class="sub">Аренда, кредиты, связь и другие платежи</p></div></div><div class="expense-list" id="expenses"></div><button class="add" id="addExpense">＋ Добавить расход</button><div class="total-row"><span>Всего обязательных трат</span><strong id="expenseTotal">0 ₽</strong></div></section>
-<section class="card summary"><div class="summary-top"><div><div class="eyebrow">После обязательных платежей</div><h2>Можно распределить</h2><div class="remaining" id="remaining">51 199,50 ₽</div><div class="remaining-label">свободный остаток на месяц</div></div><div class="chips"><span class="chip" id="incomeChip">Доход: 51 199,50 ₽</span><span class="chip" id="expenseChip">Траты: 0 ₽</span></div></div><div class="bar" id="bar"></div><div class="breakdown" id="breakdown"></div><div class="allocation"><h3>Распределение остатка</h3><p class="sub">Измени доли — суммы пересчитаются автоматически</p><div class="pct-grid" id="pctGrid"></div><div class="allocation-note" id="allocationNote"></div></div><div class="status" id="status"></div></section></div><p class="footer">Расчёт ориентировочный. Доли можно настроить под свои привычки.</p></main><div class="toast" id="toast"></div>
-<script>
-const cats=[{key:'food',name:'Продукты',pct:45},{key:'fun',name:'Развлечения',pct:15},{key:'other',name:'Прочее',pct:20},{key:'save',name:'Накопления',pct:20}], colors=['#efb3d2','#d79be1','#f3a9c6','#bd9cf0'];
-const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:2}).format(Number.isFinite(n)?n:0)+' ₽';
-const expenses=document.querySelector('#expenses');let toastTimer;
-function addExpense(name='',amount=''){const row=document.createElement('div');row.className='expense-row';row.innerHTML='<input class="expense-input name" aria-label="Название расхода" placeholder="Например, аренда"><input class="expense-input amount" aria-label="Сумма расхода" placeholder="0 ₽" type="number" min="0" step="0.01" inputmode="decimal"><button class="remove" type="button" aria-label="Удалить расход">×</button>';row.querySelector('.name').value=name;row.querySelector('.amount').value=amount;row.addEventListener('input',render);row.querySelector('.remove').onclick=()=>{row.remove();render()};expenses.append(row);render()}
-function render(){let income=Math.max(0,+document.querySelector('#income').value||0),sum=[...expenses.querySelectorAll('.amount')].reduce((t,x)=>t+(Math.max(0,+x.value||0)),0),left=income-sum;document.querySelector('#expenseTotal').textContent=fmt(sum);document.querySelector('#incomeChip').textContent='Доход: '+fmt(income);document.querySelector('#expenseChip').textContent='Траты: '+fmt(sum);let rem=document.querySelector('#remaining');rem.textContent=fmt(left);rem.classList.toggle('negative',left<0);let total=cats.reduce((a,c)=>a+c.pct,0);document.querySelector('#allocationNote').textContent=total===100?'Доли в сумме: 100%':'Сумма долей сейчас '+total+'% — скорректируй до 100%.';document.querySelector('#breakdown').innerHTML=cats.map((c,i)=>`<div class="category"><div class="cat-top"><span><i class="dot" style="background:${colors[i]}"></i>${c.name}</span><span>${c.pct}%</span></div><div class="cat-amount">${fmt(left*c.pct/100)}</div><div class="cat-pct">ориентир на месяц</div></div>`).join('');document.querySelector('#bar').innerHTML=cats.map((c,i)=>`<span style="width:${Math.max(0,c.pct)}%;background:${colors[i]}"></span>`).join('');document.querySelector('#status').textContent=left<0?'Обязательные траты превышают доход на '+fmt(-left)+'.':total!==100?'Сумма распределения не равна 100% — категории всё равно считаются от остатка.':'';}
-document.querySelector('#pctGrid').innerHTML=cats.map(c=>`<div class="pct"><label for="pct-${c.key}">${c.name}, %</label><input id="pct-${c.key}" type="number" min="0" max="100" value="${c.pct}" inputmode="numeric"></div>`).join('');cats.forEach(c=>document.querySelector('#pct-'+c.key).addEventListener('input',e=>{c.pct=Math.max(0,+e.target.value||0);render()}));document.querySelector('#income').addEventListener('input',render);document.querySelector('#addExpense').onclick=()=>addExpense();document.querySelector('#today').textContent=new Intl.DateTimeFormat('ru-RU',{month:'long',year:'numeric'}).format(new Date());
-const themeBtn=document.querySelector('#themeToggle');function setTheme(theme){document.body.dataset.theme=theme;const dark=theme==='dark';themeBtn.textContent=dark?'☀️ Светлая тема':'🌙 Тёмная тема';themeBtn.setAttribute('aria-label',dark?'Включить светлую тему':'Включить тёмную тему');document.querySelector('#themeColor').content=dark?'#17121d':'#f6f1fa';try{localStorage.setItem('balance-theme',theme)}catch{}}let savedTheme='light';try{savedTheme=localStorage.getItem('balance-theme')||'light'}catch{}setTheme(savedTheme);themeBtn.addEventListener('click',()=>setTheme(document.body.dataset.theme==='dark'?'light':'dark'));
-function notify(s){let t=document.querySelector('#toast');t.textContent=s;t.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.style.display='none',3800)}
-function norm(s){return String(s||'').toLowerCase().replaceAll('ё','е').replace(/[^а-яa-z0-9]/g,'')}
-function parseRows(rows){if(!rows.length)throw Error('На первом листе нет данных');const headers=rows[0].map(norm);const afterIdx=headers.findIndex(x=>x.includes('посленалога')||x.includes('начистыми')||x==='netpay');const salaryIdx=afterIdx>=0?afterIdx:headers.findIndex(x=>x.includes('заработано')||x.includes('зарплата')||x.includes('доход')||x==='salary');if(salaryIdx<0)throw Error('Не найдена колонка «после налога», «заработано» или «зарплата». Введи сумму вручную.');let candidates=[];for(let i=1;i<rows.length;i++){const v=Number(String(rows[i][salaryIdx]??'').replace(/\s/g,'').replace(',','.'));if(Number.isFinite(v)&&v>0)candidates.push({row:i+1,val:v})}if(!candidates.length)throw Error('В колонке дохода не найдены суммы.');let total=candidates[candidates.length-1];if(candidates.length>1){const prev=candidates.slice(0,-1).reduce((a,b)=>a+b.val,0);if(Math.abs(prev-total.val)<Math.max(1,total.val*.015))total={...total,kind:'total'};else total=candidates.reduce((a,b)=>a.val>b.val?a:b)}return {amount:total.val,header:rows[0][salaryIdx],row:total.row,after:afterIdx>=0}}
-document.querySelector('#file').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;document.querySelector('#fileName').textContent=f.name;try{let rows;if(f.name.toLowerCase().endsWith('.csv')){const txt=await f.text();rows=txt.replace(/^\uFEFF/,'').split(/\r?\n/).filter(Boolean).map(line=>line.split(/[;,\t]/))}else{if(!window.XLSX)throw Error('Модуль чтения Excel не загрузился. Проверь подключение к интернету и попробуй ещё раз.');const wb=XLSX.read(await f.arrayBuffer(),{type:'array',cellDates:false});rows=XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{header:1,raw:true,defval:null})}const p=parseRows(rows);document.querySelector('#income').value=p.amount;document.querySelector('#incomeHint').textContent=`Найдено: «${p.header}», строка ${p.row}. ${p.after?'Похоже, это сумма после налога.':'Сумма найдена в колонке дохода; проверь налоговый статус.'}`;render();notify('Доход загружен: '+fmt(p.amount))}catch(err){document.querySelector('#incomeHint').textContent=err.message;notify(err.message)}e.target.value=''});
-addExpense('Аренда / ипотека');addExpense('Кредиты и подписки');addExpense('Связь и транспорт');render();
-</script></body></html>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f6f1fa" id="themeColor">
+  <title>Баланс — план зарплаты</title>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <style>
+    /* ---------- Переменные и темы ---------- */
+    :root {
+      color-scheme: light;
+      --bg: #f6f1fa;
+      --card: #ffffff;
+      --ink: #241c2d;
+      --muted: #817889;
+      --line: #e9e1ed;
+      --field: #fdfbfe;
+      --accent: #7546a4;
+      --focus: #eeddf6;
+      --btn-bg: linear-gradient(120deg, #7648b1, #cc66aa);
+      --btn-ink: #ffffff;
+      --hero-bg: linear-gradient(120deg, #6841a1 0%, #a34fa4 54%, #d75f9d 100%);
+      --hero-line: #ffffff1f;
+      --danger: #ffd5cd;
+    }
 
+    body[data-theme="dark"] {
+      color-scheme: dark;
+      --bg: #17121d;
+      --card: #211a29;
+      --ink: #f4edf8;
+      --muted: #b2a5bb;
+      --line: #382d42;
+      --field: #19141f;
+      --accent: #e59bc8;
+      --focus: #4b315c;
+      --hero-bg: linear-gradient(120deg, #503275 0%, #773d79 54%, #9c3f70 100%);
+    }
 
+    /* ---------- Основа ---------- */
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 9% 0%, #edddf780 0, transparent 34%),
+        radial-gradient(ellipse at 94% 12%, #f6d9e880 0, transparent 30%),
+        var(--bg);
+      color: var(--ink);
+      font: 15px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+      font-variant-numeric: tabular-nums;
+    }
+
+    body[data-theme="dark"] {
+      background:
+        radial-gradient(ellipse at 8% 0%, #482b5c7a 0, transparent 36%),
+        radial-gradient(ellipse at 96% 10%, #5a294d65 0, transparent 32%),
+        var(--bg);
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    .shell {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding:
+        max(32px, env(safe-area-inset-top))
+        max(24px, env(safe-area-inset-right))
+        max(64px, env(safe-area-inset-bottom))
+        max(24px, env(safe-area-inset-left));
+    }
+
+    /* ---------- Шапка ---------- */
+    .top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 56px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 15px;
+      letter-spacing: -.2px;
+    }
+
+    .logo {
+      width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #8050c1, #e179ae);
+      color: #fff;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .period {
+      color: var(--muted);
+      font-size: 13px;
+      text-transform: capitalize;
+    }
+
+    .theme-toggle {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: transparent;
+      color: var(--ink);
+      transition: border-color .2s;
+    }
+
+    .theme-toggle:hover { border-color: var(--muted); }
+    .theme-toggle svg { width: 16px; height: 16px; }
+    .theme-toggle .icon-sun { display: none; }
+    body[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+    body[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+    /* ---------- Заголовок ---------- */
+    .intro { margin-bottom: 40px; }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: 1.6px;
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .intro h1 {
+      font-size: clamp(30px, 6vw, 46px);
+      font-weight: 600;
+      letter-spacing: -.035em;
+      line-height: 1.08;
+      margin: 12px 0 10px;
+    }
+
+    .intro p {
+      color: var(--muted);
+      margin: 0;
+      max-width: 460px;
+    }
+
+    /* ---------- Раскладка ---------- */
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .col {
+      display: grid;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      padding: 28px;
+    }
+
+    .card h2 {
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -.02em;
+      margin: 0;
+    }
+
+    .sub {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 4px 0 22px;
+    }
+
+    /* ---------- Кнопки ---------- */
+    .button {
+      background: var(--btn-bg);
+      color: var(--btn-ink);
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: opacity .2s;
+    }
+
+    .upload:hover .button { opacity: .85; }
+
+    /* ---------- Загрузка файла ---------- */
+    .upload {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      border: 1px dashed var(--line);
+      border-radius: 16px;
+      background: var(--field);
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+
+    .upload:hover { border-color: var(--muted); }
+
+    .upload-title { font-weight: 600; }
+
+    .upload small {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 2px;
+    }
+
+    .file-name {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 10px;
+      min-height: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    /* ---------- Поля ввода ---------- */
+    .money input,
+    .expense-input {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--line);
+      background: var(--field);
+      border-radius: 14px;
+      padding: 0 14px;
+      color: var(--ink);
+      font-size: 16px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .money input:focus,
+    .expense-input:focus {
+      border-color: #bd7bcc;
+      box-shadow: 0 0 0 3px var(--focus);
+    }
+
+    .expense-input::placeholder { color: var(--muted); opacity: .7; }
+
+    /* ---------- Доход ---------- */
+    .income { margin-top: 24px; }
+
+    .field-label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .money { position: relative; }
+
+    .money input {
+      min-height: 60px;
+      padding: 0 44px 0 16px;
+      font-size: 26px;
+      font-weight: 500;
+      letter-spacing: -.02em;
+    }
+
+    .suffix {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--muted);
+      font-size: 18px;
+      pointer-events: none;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    /* ---------- Обязательные траты ---------- */
+    .expense-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .expense-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 140px 40px;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .remove {
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: var(--muted);
+      font-size: 20px;
+      line-height: 1;
+      transition: background .2s, color .2s;
+    }
+
+    .remove:hover {
+      background: var(--field);
+      color: var(--ink);
+    }
+
+    .add {
+      margin-top: 14px;
+      min-height: 44px;
+      padding: 0;
+      background: transparent;
+      border: 0;
+      color: var(--accent);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .add:hover { opacity: .65; }
+
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-top: 1px solid var(--line);
+      margin-top: 14px;
+      padding-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .total-row strong {
+      color: var(--ink);
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    /* ---------- Итог ---------- */
+    .summary {
+      background: var(--hero-bg);
+      border-color: var(--hero-line);
+      color: #fff;
+      position: sticky;
+      top: 24px;
+      overflow: hidden;
+    }
+
+    .summary::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      right: -95px;
+      top: -150px;
+      border-radius: 50%;
+      border: 1px solid #ffffff17;
+      box-shadow: 0 0 0 32px #ffffff08, 0 0 0 64px #ffffff06;
+      pointer-events: none;
+    }
+
+    .summary .eyebrow { color: #f4d9fa; }
+
+    .remaining {
+      font-size: clamp(38px, 9vw, 56px);
+      font-weight: 500;
+      letter-spacing: -.04em;
+      line-height: 1.05;
+      margin-top: 14px;
+      overflow-wrap: anywhere;
+    }
+
+    .remaining.negative { color: var(--danger); }
+
+    .remaining-label {
+      color: #f3d9ed;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 26px;
+      padding-top: 20px;
+      border-top: 1px solid var(--hero-line);
+    }
+
+    .meta span {
+      display: block;
+      font-size: 12px;
+      color: #f3d9ed;
+    }
+
+    .meta strong {
+      display: block;
+      margin-top: 2px;
+      font-size: 16px;
+      font-weight: 500;
+      overflow-wrap: anywhere;
+    }
+
+    /* Полоса распределения */
+    .bar {
+      display: flex;
+      gap: 3px;
+      height: 6px;
+      margin-top: 26px;
+    }
+
+    .bar span {
+      height: 100%;
+      border-radius: 3px;
+      transition: width .3s;
+    }
+
+    /* Распределение */
+    .allocation { margin-top: 22px; }
+
+    .alloc-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--hero-line);
+    }
+
+    .alloc-row:last-child { border-bottom: 0; }
+
+    .alloc-name {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      min-width: 0;
+    }
+
+    .dot {
+      flex: none;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .alloc-pct {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #f3d9ed;
+      font-size: 13px;
+    }
+
+    .alloc-pct input {
+      width: 56px;
+      min-height: 40px;
+      border: 1px solid var(--hero-line);
+      background: #ffffff0f;
+      border-radius: 10px;
+      color: #fff;
+      font-size: 16px;
+      text-align: right;
+      padding: 0 8px;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .alloc-pct input:focus { border-color: #f4c0e2; }
+
+    .alloc-amount {
+      min-width: 92px;
+      text-align: right;
+      font-size: 15px;
+      font-weight: 500;
+    }
+
+    .allocation-note,
+    .status {
+      font-size: 12px;
+      color: #f3d9ed;
+      margin-top: 12px;
+    }
+
+    .status {
+      min-height: 18px;
+      margin-top: 4px;
+    }
+
+    /* ---------- Подвал и уведомление ---------- */
+    .footer {
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+      margin: 40px 0 0;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: max(20px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      width: max-content;
+      max-width: calc(100vw - 32px);
+      background: var(--btn-bg);
+      color: var(--btn-ink);
+      padding: 12px 18px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 500;
+      display: none;
+      z-index: 5;
+    }
+
+    /* ---------- Планшет ---------- */
+    @media (max-width: 900px) {
+      .layout { grid-template-columns: minmax(0, 1fr); }
+      .summary { position: static; }
+      .top { margin-bottom: 40px; }
+    }
+
+    /* ---------- Телефон ---------- */
+    @media (max-width: 560px) {
+      .shell { padding: max(20px, env(safe-area-inset-top)) 16px max(48px, env(safe-area-inset-bottom)); }
+      .top { margin-bottom: 32px; }
+      .intro { margin-bottom: 28px; }
+      .layout, .col { gap: 14px; }
+      .card { padding: 20px; border-radius: 20px; }
+      .period { display: none; }
+
+      .upload { padding: 14px; }
+      .money input { min-height: 56px; font-size: 24px; }
+
+      .expense-row {
+        grid-template-columns: minmax(0, 1fr) 44px;
+        gap: 8px;
+        padding: 10px;
+        background: var(--field);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+      }
+
+      .expense-row .expense-input { background: var(--card); }
+      .expense-row .remove { grid-column: 2; grid-row: 1 / span 2; width: 44px; height: 44px; }
+
+      .alloc-amount { min-width: 80px; font-size: 14px; }
+    }
+
+    @media (max-width: 360px) {
+      .upload { flex-direction: column; align-items: stretch; text-align: center; }
+      .alloc-row { gap: 8px; }
+      .alloc-amount { min-width: 70px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="shell">
+    <header class="top">
+      <div class="brand">
+        <span class="logo">₽</span>
+        <span>Баланс</span>
+      </div>
+      <div class="top-actions">
+        <div class="period" id="today"></div>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Включить тёмную тему">
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="intro">
+      <div class="eyebrow">План на месяц</div>
+      <h1>Деньги под контролем</h1>
+      <p>Загрузи зарплату, добавь обязательные траты — остальное распределим.</p>
+    </section>
+
+    <div class="layout">
+      <div class="col">
+        <!-- Доход -->
+        <section class="card">
+          <h2>Доход</h2>
+          <p class="sub">Загрузи Excel или введи сумму вручную</p>
+
+          <label class="upload" for="file">
+            <span>
+              <span class="upload-title">Файл с зарплатой</span>
+              <small>.xlsx, .xls или .csv · обработка в браузере</small>
+            </span>
+            <span class="button">Выбрать</span>
+          </label>
+          <input id="file" type="file" accept=".xlsx,.xls,.csv" hidden>
+          <div class="file-name" id="fileName"></div>
+
+          <div class="income">
+            <label class="field-label" for="income">Доход после налогов</label>
+            <div class="money">
+              <input id="income" type="number" min="0" step="0.01" value="51199.5" inputmode="decimal">
+              <span class="suffix">₽</span>
+            </div>
+            <div class="hint" id="incomeHint">Сумма после налога из строки итога вашего файла. Проверь перед планированием.</div>
+          </div>
+        </section>
+
+        <!-- Обязательные траты -->
+        <section class="card">
+          <h2>Обязательные траты</h2>
+          <p class="sub">Аренда, кредиты, связь и другие платежи</p>
+          <div class="expense-list" id="expenses"></div>
+          <button class="add" id="addExpense" type="button">＋ Добавить расход</button>
+          <div class="total-row">
+            <span>Всего обязательных трат</span>
+            <strong id="expenseTotal">0 ₽</strong>
+          </div>
+        </section>
+      </div>
+
+      <!-- Итог -->
+      <aside class="card summary">
+        <div class="eyebrow">После обязательных платежей</div>
+        <div class="remaining" id="remaining">51 199,50 ₽</div>
+        <div class="remaining-label">можно распределить на месяц</div>
+
+        <div class="meta">
+          <div><span>Доход</span><strong id="incomeValue">51 199,50 ₽</strong></div>
+          <div><span>Траты</span><strong id="expenseValue">0 ₽</strong></div>
+        </div>
+
+        <div class="bar" id="bar"></div>
+
+        <div class="allocation">
+          <div class="allocation-list" id="allocation"></div>
+          <div class="allocation-note" id="allocationNote"></div>
+          <div class="status" id="status"></div>
+        </div>
+      </aside>
+    </div>
+
+    <p class="footer">Расчёт ориентировочный. Доли можно настроить под свои привычки.</p>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ---------- Данные ----------
+    const categories = [
+      { key: 'food',  name: 'Продукты',    pct: 45 },
+      { key: 'fun',   name: 'Развлечения', pct: 15 },
+      { key: 'other', name: 'Прочее',      pct: 20 },
+      { key: 'save',  name: 'Накопления',  pct: 20 },
+    ];
+    const colors = ['#efb3d2', '#d79be1', '#f3a9c6', '#bd9cf0'];
+
+    // ---------- Элементы ----------
+    const $ = (selector) => document.querySelector(selector);
+
+    const expensesList = $('#expenses');
+    const incomeInput = $('#income');
+    const themeBtn = $('#themeToggle');
+    let toastTimer;
+
+    // ---------- Утилиты ----------
+    const formatMoney = (n) =>
+      new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 })
+        .format(Number.isFinite(n) ? n : 0) + ' ₽';
+
+    const normalize = (s) =>
+      String(s || '')
+        .toLowerCase()
+        .replaceAll('ё', 'е')
+        .replace(/[^а-яa-z0-9]/g, '');
+
+    function notify(message) {
+      const toast = $('#toast');
+      toast.textContent = message;
+      toast.style.display = 'block';
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => { toast.style.display = 'none'; }, 3800);
+    }
+
+    // ---------- Расчёт и отрисовка ----------
+    function render() {
+      const income = Math.max(0, +incomeInput.value || 0);
+      const expensesSum = [...expensesList.querySelectorAll('.amount')]
+        .reduce((sum, input) => sum + Math.max(0, +input.value || 0), 0);
+      const left = income - expensesSum;
+      const pctTotal = categories.reduce((sum, c) => sum + c.pct, 0);
+
+      $('#expenseTotal').textContent = formatMoney(expensesSum);
+      $('#incomeValue').textContent = formatMoney(income);
+      $('#expenseValue').textContent = formatMoney(expensesSum);
+
+      const remaining = $('#remaining');
+      remaining.textContent = formatMoney(left);
+      remaining.classList.toggle('negative', left < 0);
+
+      categories.forEach((c) => {
+        $('#amount-' + c.key).textContent = formatMoney(left * c.pct / 100);
+      });
+
+      $('#bar').innerHTML = categories
+        .map((c, i) => `<span style="width:${Math.max(0, c.pct)}%;background:${colors[i]}"></span>`)
+        .join('');
+
+      $('#allocationNote').textContent = pctTotal === 100
+        ? 'Доли в сумме: 100%'
+        : `Сумма долей сейчас ${pctTotal}% — скорректируй до 100%.`;
+
+      let status = '';
+      if (left < 0) {
+        status = 'Обязательные траты превышают доход на ' + formatMoney(-left) + '.';
+      } else if (pctTotal !== 100) {
+        status = 'Сумма распределения не равна 100% — категории всё равно считаются от остатка.';
+      }
+      $('#status').textContent = status;
+    }
+
+    // ---------- Обязательные траты ----------
+    function addExpense(name = '', amount = '') {
+      const row = document.createElement('div');
+      row.className = 'expense-row';
+      row.innerHTML = `
+        <input class="expense-input name" aria-label="Название расхода" placeholder="Например, аренда">
+        <input class="expense-input amount" aria-label="Сумма расхода" placeholder="0 ₽" type="number" min="0" step="0.01" inputmode="decimal">
+        <button class="remove" type="button" aria-label="Удалить расход">×</button>`;
+
+      row.querySelector('.name').value = name;
+      row.querySelector('.amount').value = amount;
+      row.addEventListener('input', render);
+      row.querySelector('.remove').addEventListener('click', () => {
+        row.remove();
+        render();
+      });
+
+      expensesList.append(row);
+      render();
+    }
+
+    // ---------- Распределение остатка ----------
+    $('#allocation').innerHTML = categories.map((c, i) => `
+      <div class="alloc-row">
+        <span class="alloc-name"><i class="dot" style="background:${colors[i]}"></i>${c.name}</span>
+        <label class="alloc-pct">
+          <input id="pct-${c.key}" type="number" min="0" max="100" value="${c.pct}" inputmode="numeric" aria-label="Доля: ${c.name}, %">
+          <span>%</span>
+        </label>
+        <span class="alloc-amount" id="amount-${c.key}"></span>
+      </div>`).join('');
+
+    categories.forEach((c) => {
+      $('#pct-' + c.key).addEventListener('input', (e) => {
+        c.pct = Math.max(0, +e.target.value || 0);
+        render();
+      });
+    });
+
+    // ---------- Тема ----------
+    function setTheme(theme) {
+      const dark = theme === 'dark';
+      document.body.dataset.theme = theme;
+      themeBtn.setAttribute('aria-label', dark ? 'Включить светлую тему' : 'Включить тёмную тему');
+      $('#themeColor').content = dark ? '#17121d' : '#f6f1fa';
+      try { localStorage.setItem('balance-theme', theme); } catch {}
+    }
+
+    function loadTheme() {
+      try { return localStorage.getItem('balance-theme') || 'light'; }
+      catch { return 'light'; }
+    }
+
+    // ---------- Разбор файла с зарплатой ----------
+    function parseRows(rows) {
+      if (!rows.length) throw Error('На первом листе нет данных');
+
+      const headers = rows[0].map(normalize);
+      const afterTaxIdx = headers.findIndex((h) =>
+        h.includes('посленалога') || h.includes('начистыми') || h === 'netpay');
+      const salaryIdx = afterTaxIdx >= 0
+        ? afterTaxIdx
+        : headers.findIndex((h) =>
+            h.includes('заработано') || h.includes('зарплата') || h.includes('доход') || h === 'salary');
+
+      if (salaryIdx < 0) {
+        throw Error('Не найдена колонка «после налога», «заработано» или «зарплата». Введи сумму вручную.');
+      }
+
+      const candidates = [];
+      for (let i = 1; i < rows.length; i++) {
+        const value = Number(String(rows[i][salaryIdx] ?? '').replace(/\s/g, '').replace(',', '.'));
+        if (Number.isFinite(value) && value > 0) candidates.push({ row: i + 1, value });
+      }
+      if (!candidates.length) throw Error('В колонке дохода не найдены суммы.');
+
+      // Если последняя строка равна сумме предыдущих — это итог. Иначе берём максимум.
+      const last = candidates[candidates.length - 1];
+      let result = last;
+      if (candidates.length > 1) {
+        const previousSum = candidates.slice(0, -1).reduce((sum, c) => sum + c.value, 0);
+        const isTotal = Math.abs(previousSum - last.value) < Math.max(1, last.value * 0.015);
+        if (!isTotal) result = candidates.reduce((a, b) => (a.value > b.value ? a : b));
+      }
+
+      return {
+        amount: result.value,
+        header: rows[0][salaryIdx],
+        row: result.row,
+        afterTax: afterTaxIdx >= 0,
+      };
+    }
+
+    async function readRows(file) {
+      if (file.name.toLowerCase().endsWith('.csv')) {
+        const text = await file.text();
+        return text
+          .replace(/^\uFEFF/, '')
+          .split(/\r?\n/)
+          .filter(Boolean)
+          .map((line) => line.split(/[;,\t]/));
+      }
+
+      if (!window.XLSX) {
+        throw Error('Модуль чтения Excel не загрузился. Проверь подключение к интернету и попробуй ещё раз.');
+      }
+      const workbook = XLSX.read(await file.arrayBuffer(), { type: 'array', cellDates: false });
+      return XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]], {
+        header: 1,
+        raw: true,
+        defval: null,
+      });
+    }
+
+    $('#file').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      $('#fileName').textContent = file.name;
+
+      try {
+        const parsed = parseRows(await readRows(file));
+        incomeInput.value = parsed.amount;
+        $('#incomeHint').textContent =
+          `Найдено: «${parsed.header}», строка ${parsed.row}. ` +
+          (parsed.afterTax
+            ? 'Похоже, это сумма после налога.'
+            : 'Сумма найдена в колонке дохода; проверь налоговый статус.');
+        render();
+        notify('Доход загружен: ' + formatMoney(parsed.amount));
+      } catch (err) {
+        $('#incomeHint').textContent = err.message;
+        notify(err.message);
+      }
+
+      e.target.value = '';
+    });
+
+    // ---------- Запуск ----------
+    incomeInput.addEventListener('input', render);
+    $('#addExpense').addEventListener('click', () => addExpense());
+    themeBtn.addEventListener('click', () =>
+      setTheme(document.body.dataset.theme === 'dark' ? 'light' : 'dark'));
+
+    $('#today').textContent = new Intl.DateTimeFormat('ru-RU', { month: 'long', year: 'numeric' })
+      .format(new Date());
+
+    setTheme(loadTheme());
+    addExpense('Аренда / ипотека');
+    addExpense('Кредиты и подписки');
+    addExpense('Связь и транспорт');
+    render();
+  </script>
+</body>
+</html>
